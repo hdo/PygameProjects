@@ -19,14 +19,14 @@ def create_screen():
                 continue
             found = True
             break
-        #return pygame.display.set_mode((800, 480), pygame.FULLSCREEN)
-        return pygame.display.set_mode((800, 480))
+        return pygame.display.set_mode((800, 480), pygame.FULLSCREEN)
+        #return pygame.display.set_mode((800, 480))
 
 
 
 def get_title(title):
     textfont = pygame.font.Font(None, 40)    
-    text = textfont.render(title, 1, (200,200,200))
+    text = textfont.render(title, 1, (0,200,0))
     return text
     
     
@@ -36,8 +36,7 @@ def get_title(title):
 pygame.init()
 screen = create_screen()
 
-pygame.display.flip()
-pygame.display.update()
+pygame.mouse.set_visible(0)
 
 clock = pygame.time.Clock()
 
@@ -59,10 +58,10 @@ for item in sorted(os.listdir('cover')):
     current_cover = pygame.transform.scale(current_cover, (360, 360))
     cover_list.append(current_cover)
 
-menu = SimpleMenu.SimpleMenu(380, 400, 30)
+menu = SimpleMenu.SimpleMenu(380, 400, 40)
 for i in range(50):
     menu.add_item("MENU ENTRY %.3d" % i)
-menu.textcolor = (200,200,200)    
+menu.textcolor = (150,150,150)    
     
 
 
@@ -72,6 +71,8 @@ while not gameExit:
 
     for event in pygame.event.get():
         #print(event)
+        if event.type == pygame.QUIT:
+            gameExit = True
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 gameExit = True
@@ -96,9 +97,13 @@ while not gameExit:
         screen.blit(menu.get_menu(), (400,60))
         new_pos = cover_list[current_index].get_rect()
         new_pos.centerx = 200
-        new_pos.centery = 240
+        new_pos.centery = 260
         screen.blit(cover_list[current_index], new_pos)
-        screen.blit(get_title(menu.menuitems[menu.index]), (50,10))
+        title_label = get_title(menu.menuitems[menu.index])
+        title_rect = title_label.get_rect()
+        title_rect.centerx = 400
+        title_rect.y = 20
+        screen.blit(title_label, title_rect)
         
 
     pygame.display.update()
