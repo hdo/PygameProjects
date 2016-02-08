@@ -45,30 +45,42 @@ done = False
 dirty = True
 show_menu = 1
 animate_state = False
+animate_dir = 1
 start = 0;
 
 print "go"
 while not done:
+
+    if animate_state:
+        # ignore input on anmiation
+        pygame.event.clear()
+        dirty = True
+        if animate_dir == 1:
+            start = start + 75
+            if start >= 380:
+                start = 380
+                animate_state = False
+        if animate_dir == -1:
+            start = start - 75
+            if start <= 0:
+                start = 0
+                animate_state = False
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
         if event.type == pygame.KEYDOWN:            
             if event.key == pygame.K_RIGHT or event.key == pygame.K_RETURN:
+                animate_dir = 1
+                animate_state = True
+                dirty = True
+            if event.key == pygame.K_LEFT:
+                animate_dir = -1
                 animate_state = True
                 dirty = True
             if event.key == pygame.K_ESCAPE:
                 done = True
     
-    if animate_state:
-        # ignore input on anmiation
-        pygame.event.clear()
-        dirty = True
-        start = start + 75
-        #print start
-        if start >= 380:
-            start = 380;
-            animate_state = False
-        
         
         
     if dirty or animate_state:
