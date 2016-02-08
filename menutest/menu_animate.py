@@ -28,7 +28,6 @@ pygame.init()
 screen = create_screen()
 clock = pygame.time.Clock()
 
-done = False
 
 menu = SimpleMenu.SimpleMenu(380, 300, 30)
 for i in range(50):
@@ -42,49 +41,45 @@ submenu.index = 4
 
 screen.blit(menu.get_menu(), (300,10))
 
+done = False
 dirty = True
 show_menu = 1
 animate_state = False
+start = 0;
+
+print "go"
 while not done:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            done = True
+        if event.type == pygame.KEYDOWN:            
+            if event.key == pygame.K_RIGHT or event.key == pygame.K_RETURN:
+                animate_state = True
+                dirty = True
     
     if animate_state:
         # ignore input on anmiation
         pygame.event.clear()
-    
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            done = True
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                if show_menu == 1:
-                    menu.dec_index()
-                if show_menu == 2:
-                    submenu.dec_index()
-                dirty = True
-            if event.key == pygame.K_DOWN:
-                if show_menu == 1:
-                    menu.inc_index()
-                if show_menu == 2:
-                    submenu.inc_index()
-                dirty = True
-            if event.key == pygame.K_LEFT:
-                show_menu = 1
-                dirty = True
-            if event.key == pygame.K_RIGHT or event.key == pygame.K_RETURN:
-                show_menu = 2
-                dirty = True
-            if event.key == pygame.K_ESCAPE:
-                done = True
-    
-    
-    if dirty:
+        dirty = True
+        start = start + 75
+        #print start
+        if start >= 380:
+            start = 380;
+            animate_state = False
+        
+        
+        
+    if dirty or animate_state:
         dirty = False
         screen.fill((0,0,0))
-        if show_menu == 1:
-            screen.blit(menu.get_menu(), (400,50))
-        if show_menu == 2:
-            screen.blit(submenu.get_menu(), (400,50))
-
+        menu1 =  menu.get_menu()   
+        rect_m1 = menu1.get_rect()
+        menu2 = submenu.get_menu()
+        rect_m2 = menu2.get_rect()   
+        #screen.blit(menu1, rect_m1, (100,0,120,400))
+        screen.blit(menu1, (0,0), rect_m1.clip(0+start,0,380-start,400))
+        screen.blit(menu2, (380-start,0), rect_m2.clip(0,0,start,400))
+        #print "updat"    
         pygame.display.flip()
         
     clock.tick(30)
