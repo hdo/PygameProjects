@@ -30,13 +30,20 @@ clock = pygame.time.Clock()
 
 done = False
 
-menu = SimpleMenu.SimpleMenu(380, 400, 30)
+menu = SimpleMenu.SimpleMenu(380, 300, 30)
 for i in range(50):
     menu.add_item("MENU ENTRY %.3d" % i)
 menu.index = 4
+
+submenu = SimpleMenu.SimpleMenu(380, 300, 30)
+for i in range(50):
+    submenu.add_item("SUBMENU ENTRY %.3d" % i)
+submenu.index = 4
+
 screen.blit(menu.get_menu(), (300,10))
 
 dirty = True
+show_menu = 1
 while not done:
     
     
@@ -45,10 +52,22 @@ while not done:
             done = True
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
-                menu.dec_index()
+                if show_menu == 1:
+                    menu.dec_index()
+                if show_menu == 2:
+                    submenu.dec_index()
                 dirty = True
             if event.key == pygame.K_DOWN:
-                menu.inc_index()
+                if show_menu == 1:
+                    menu.inc_index()
+                if show_menu == 2:
+                    submenu.inc_index()
+                dirty = True
+            if event.key == pygame.K_LEFT:
+                show_menu = 1
+                dirty = True
+            if event.key == pygame.K_RIGHT or event.key == pygame.K_RETURN:
+                show_menu = 2
                 dirty = True
             if event.key == pygame.K_ESCAPE:
                 done = True
@@ -57,7 +76,10 @@ while not done:
     if dirty:
         dirty = False
         screen.fill((0,0,0))
-        screen.blit(menu.get_menu(), (400,50))
+        if show_menu == 1:
+            screen.blit(menu.get_menu(), (400,50))
+        if show_menu == 2:
+            screen.blit(submenu.get_menu(), (400,50))
         pygame.display.flip()
         
     clock.tick(30)
