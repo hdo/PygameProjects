@@ -56,6 +56,8 @@ while not done:
             if event.key == pygame.K_RIGHT or event.key == pygame.K_RETURN:
                 animate_state = True
                 dirty = True
+            if event.key == pygame.K_ESCAPE:
+                done = True
     
     if animate_state:
         # ignore input on anmiation
